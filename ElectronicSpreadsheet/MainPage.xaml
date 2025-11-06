@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ElectronicSpreadsheet.MainPage"
+             Title="Електронна таблиця">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="10">
+
+        <!-- Панель назви та файлових операцій -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10" Margin="0,0,0,10">
+            <Label Grid.Column="0" 
+                   Text="Назва таблиці:" 
+                   VerticalOptions="Center"
+                   FontAttributes="Bold"
+                   TextColor="Black"/>
+
+            <Entry Grid.Column="1" 
+                   x:Name="tableNameEntry"
+                   Placeholder="Введіть назву таблиці"
+                   TextChanged="OnTableNameChanged"
+                   VerticalOptions="Center"/>
+
+            <Button Grid.Column="2" 
+                    Text="Зберегти"
+                    Clicked="OnSave"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    WidthRequest="120"/>
+
+            <Button Grid.Column="3" 
+                    Text="Відкрити"
+                    Clicked="OnOpen"
+                    BackgroundColor="#2196F3"
+                    TextColor="White"
+                    WidthRequest="120"/>
+        </Grid>
+
+        <!-- Панель інструментів -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto,Auto" ColumnSpacing="5" Margin="0,0,0,10">
+            <Button Grid.Column="0" 
+                    x:Name="toggleModeButton"
+                    Text="Режим: ЗНАЧЕННЯ"
+                    Clicked="OnToggleMode"
+                    BackgroundColor="#2196F3"
+                    TextColor="White"
+                    WidthRequest="180"
+                    FontSize="14"/>
+
+            <Button Grid.Column="1" 
+                    Text="+ Рядок"
+                    Clicked="OnAddRow"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    WidthRequest="90"
+                    FontSize="13"/>
+
+            <Button Grid.Column="2" 
+                    Text="- Рядок"
+                    Clicked="OnRemoveRow"
+                    BackgroundColor="#F44336"
+                    TextColor="White"
+                    WidthRequest="90"
+                    FontSize="13"/>
+
+            <Button Grid.Column="3" 
+                    Text="+ Стовпець"
+                    Clicked="OnAddColumn"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    WidthRequest="100"
+                    FontSize="12"/>
+
+            <Button Grid.Column="4" 
+                    Text="- Стовпець"
+                    Clicked="OnRemoveColumn"
+                    BackgroundColor="#F44336"
+                    TextColor="White"
+                    WidthRequest="100"
+                    FontSize="12"/>
+
+            <Button Grid.Column="6" 
+                    Text="Очистити"
+                    Clicked="OnClear"
+                    BackgroundColor="#FF9800"
+                    TextColor="White"
+                    WidthRequest="100"/>
+
+            <Button Grid.Column="7" 
+                    Text="Довідка"
+                    Clicked="OnShowHelp"
+                    BackgroundColor="#9C27B0"
+                    TextColor="White"
+                    WidthRequest="100"/>
+
+            <Button Grid.Column="8" 
+                    Text="Про програму"
+                    Clicked="OnShowAbout"
+                    BackgroundColor="#607D8B"
+                    TextColor="White"
+                    WidthRequest="130"
+                    FontSize="13"/>
+        </Grid>
+
+        <!-- Панель швидкого введення операцій -->
+        <ScrollView Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,10">
+            <HorizontalStackLayout Spacing="5">
+                <Label Text="Швидке введення:" 
+                       VerticalOptions="Center" 
+                       FontAttributes="Bold"
+                       TextColor="Black"
+                       Margin="0,0,10,0"/>
+
+                <Button Text="+" Clicked="OnInsertOperation" BackgroundColor="#E3F2FD" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="16"/>
+                <Button Text="-" Clicked="OnInsertOperation" BackgroundColor="#E3F2FD" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="16"/>
+                <Button Text="*" Clicked="OnInsertOperation" BackgroundColor="#E3F2FD" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="16"/>
+                <Button Text="/" Clicked="OnInsertOperation" BackgroundColor="#E3F2FD" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="16"/>
+                <Button Text="=" Clicked="OnInsertOperation" BackgroundColor="#FFF3E0" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="16"/>
+                <Button Text="&lt;" Clicked="OnInsertOperation" BackgroundColor="#FFF3E0" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="16"/>
+                <Button Text="&gt;" Clicked="OnInsertOperation" BackgroundColor="#FFF3E0" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="16"/>
+                <Button Text="&lt;=" Clicked="OnInsertOperation" BackgroundColor="#FFF3E0" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="14"/>
+                <Button Text="&gt;=" Clicked="OnInsertOperation" BackgroundColor="#FFF3E0" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="14"/>
+                <Button Text="&lt;&gt;" Clicked="OnInsertOperation" BackgroundColor="#FFF3E0" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="12"/>
+                <Button Text=" and " Clicked="OnInsertOperation" BackgroundColor="#E8F5E9" TextColor="Black" WidthRequest="60" HeightRequest="35" FontSize="12"/>
+                <Button Text=" or " Clicked="OnInsertOperation" BackgroundColor="#E8F5E9" TextColor="Black" WidthRequest="60" HeightRequest="35" FontSize="12"/>
+                <Button Text=" not " Clicked="OnInsertOperation" BackgroundColor="#E8F5E9" TextColor="Black" WidthRequest="60" HeightRequest="35" FontSize="12"/>
+                <Button Text="max(,)" Clicked="OnInsertOperation" BackgroundColor="#F3E5F5" TextColor="Black" WidthRequest="70" HeightRequest="35" FontSize="12"/>
+                <Button Text="min(,)" Clicked="OnInsertOperation" BackgroundColor="#F3E5F5" TextColor="Black" WidthRequest="70" HeightRequest="35" FontSize="12"/>
+                <Button Text="(" Clicked="OnInsertOperation" BackgroundColor="#ECEFF1" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="16"/>
+                <Button Text=")" Clicked="OnInsertOperation" BackgroundColor="#ECEFF1" TextColor="Black" WidthRequest="50" HeightRequest="35" FontSize="16"/>
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <!-- Таблиця -->
+        <ScrollView Grid.Row="3" Orientation="Both">
+            <Grid x:Name="spreadsheetGrid" 
+                  RowSpacing="1" 
+                  ColumnSpacing="1"
+                  BackgroundColor="LightGray"/>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>
