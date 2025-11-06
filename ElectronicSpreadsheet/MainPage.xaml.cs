@@ -16,7 +16,7 @@ namespace ElectronicSpreadsheet
         private int _rows = 10;
         private int _cols = 10;
         private string _tableName = "Нова таблиця";
-        private Entry _lastFocusedEntry; // Зберігаємо останню активну клітинку
+        private Entry _lastFocusedEntry; 
 
         private int _lastFocusedRow = -1;
         private int _lastFocusedCol = -1;
@@ -35,21 +35,21 @@ namespace ElectronicSpreadsheet
             spreadsheetGrid.RowDefinitions.Clear();
             spreadsheetGrid.ColumnDefinitions.Clear();
 
-            // Створення стовпців
+            
             spreadsheetGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = 50 });
             for (int col = 0; col < _cols; col++)
             {
                 spreadsheetGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = 120 });
             }
 
-            // Створення рядків
+            
             spreadsheetGrid.RowDefinitions.Add(new RowDefinition { Height = 40 });
             for (int row = 0; row < _rows; row++)
             {
                 spreadsheetGrid.RowDefinitions.Add(new RowDefinition { Height = 40 });
             }
 
-            // Заголовки стовпців
+            
             for (int col = 0; col < _cols; col++)
             {
                 var header = new Label
@@ -64,7 +64,7 @@ namespace ElectronicSpreadsheet
                 spreadsheetGrid.Add(header, col + 1, 0);
             }
 
-            // Заголовки рядків
+            
             for (int row = 0; row < _rows; row++)
             {
                 var header = new Label
@@ -79,7 +79,7 @@ namespace ElectronicSpreadsheet
                 spreadsheetGrid.Add(header, 0, row + 1);
             }
 
-            // Клітинки
+            
             for (int row = 0; row < _rows; row++)
             {
                 for (int col = 0; col < _cols; col++)
@@ -97,13 +97,13 @@ namespace ElectronicSpreadsheet
                     int currentRow = row;
                     int currentCol = col;
 
-                    // Обробка фокусу
+                    
                     entry.Focused += (s, e) =>
                     {
                         var e2 = (Entry)s;
-                        _lastFocusedEntry = e2; // Зберігаємо посилання
-                        _lastFocusedRow = currentRow;   // <-- ДОДАНО
-                        _lastFocusedCol = currentCol; // <-- ДОДАНО
+                        _lastFocusedEntry = e2; 
+                        _lastFocusedRow = currentRow;   
+                        _lastFocusedCol = currentCol; 
 
                         var currentCell = _engine.GetCell(currentRow, currentCol);
 
@@ -113,14 +113,14 @@ namespace ElectronicSpreadsheet
                         }
                     };
 
-                    // Обробка втрати фокусу
+                    
                     entry.Unfocused += (s, e) =>
                     {
                         var e2 = (Entry)s;
                         UpdateCell(currentRow, currentCol, e2.Text);
                     };
 
-                    // Обробка Enter
+                    
                     entry.Completed += (s, e) =>
                     {
                         var e2 = (Entry)s;
@@ -329,47 +329,43 @@ namespace ElectronicSpreadsheet
                 var button = (Button)sender;
                 string operation = button.Text;
 
-                // Декодуємо HTML entities
+                
                 operation = operation.Replace("&lt;", "<")
                                       .Replace("&gt;", ">")
                                       .Replace("&amp;", "&");
 
-                // 1. Перевіряємо, чи ми взагалі знаємо, яка клітинка активна
+                
                 if (_lastFocusedEntry == null || _lastFocusedRow == -1)
                 {
                     await DisplayAlert("Підказка", "Спочатку клацніть на клітинку, в яку хочете вставити операцію", "OK");
                     return;
                 }
 
-                // 2. Отримуємо клітинку з двигуна
+                
                 var cell = _engine.GetCell(_lastFocusedRow, _lastFocusedCol);
 
                 string textToInsertInto;
                 int cursorPosition = _lastFocusedEntry.CursorPosition;
 
-                // 3. КЛЮЧОВА ЛОГІКА: Визначаємо, який текст редагувати
-                // Якщо текст у полі ("2") дорівнює DisplayValue ("2"), 
-                // АЛЕ не дорівнює Expression ("1+1"),
-                // це означає, що Unfocused щойно спрацював і перезаписав наш вираз.
+                
                 if (_lastFocusedEntry.Text == cell.DisplayValue && _lastFocusedEntry.Text != cell.Expression)
                 {
-                    // Беремо вираз ("1+1") замість значення ("2")
+                    
                     textToInsertInto = cell.Expression;
-                    // І ставимо курсор в кінець виразу
+                    
                     cursorPosition = (textToInsertInto ?? "").Length;
                 }
                 else
                 {
-                    // Unfocused ще не спрацював, або вираз = значенню.
-                    // Безпечно беремо текст, який зараз у полі.
+                    
                     textToInsertInto = _lastFocusedEntry.Text ?? "";
                 }
 
-                // 4. Вставляємо операцію
+                
                 _lastFocusedEntry.Text = textToInsertInto.Insert(cursorPosition, operation);
                 _lastFocusedEntry.CursorPosition = cursorPosition + operation.Length;
 
-                // 5. Повертаємо фокус на клітинку
+                
                 _lastFocusedEntry.Focus();
             }
             catch (Exception ex)
