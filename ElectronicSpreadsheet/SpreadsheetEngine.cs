@@ -45,7 +45,7 @@ namespace ElectronicSpreadsheet
             _cols = newCols;
             _cells = new Cell[newRows, newCols];
 
-            // Ініціалізуємо нові клітинки
+
             for (int i = 0; i < newRows; i++)
             {
                 for (int j = 0; j < newCols; j++)
@@ -54,7 +54,7 @@ namespace ElectronicSpreadsheet
                 }
             }
 
-            // Копіюємо старі дані
+            
             int copyRows = Math.Min(oldRows, newRows);
             int copyCols = Math.Min(oldCols, newCols);
 
@@ -70,7 +70,7 @@ namespace ElectronicSpreadsheet
                 }
             }
 
-            // Перераховуємо всі клітинки
+            
             for (int i = 0; i < newRows; i++)
             {
                 for (int j = 0; j < newCols; j++)
@@ -99,9 +99,7 @@ namespace ElectronicSpreadsheet
             var cell = _cells[row, col];
             cell.Expression = expression ?? "";
 
-            // 1. Скидаємо ВСІ обчислені значення.
-            // Це позначає всі клітинки як "брудні" і змусить 
-            // GetCellValue викликати EvaluateCell для них.
+            
             for (int i = 0; i < _rows; i++)
             {
                 for (int j = 0; j < _cols; j++)
@@ -110,10 +108,7 @@ namespace ElectronicSpreadsheet
                 }
             }
 
-            // 2. Перераховуємо всі клітинки.
-            // Оскільки тепер вони всі "брудні" (ComputedValue = null),
-            // GetCellValue буде змушений викликати EvaluateCell,
-            // що дозволить нам коректно виявити цикли.
+            
             for (int i = 0; i < _rows; i++)
             {
                 for (int j = 0; j < _cols; j++)
@@ -133,11 +128,11 @@ namespace ElectronicSpreadsheet
                 cell.DisplayValue = "";
                 cell.HasError = false;
                 cell.ErrorMessage = "";
-                // cell.ComputedValue вже має бути null через SetCellExpression
+                
                 return;
             }
 
-            // Перевірка циклічних посилань
+            
             if (_evaluatingCells.Contains(cellRef))
             {
                 cell.DisplayValue = "#ЦИКЛ!";
@@ -165,9 +160,7 @@ namespace ElectronicSpreadsheet
                 cell.ErrorMessage = ex.Message;
                 cell.ComputedValue = null;
 
-                // КЛЮЧОВА ЗМІНА:
-                // Перевіряємо, чи помилка, яку ми зловили, - це вже виявлений цикл.
-                // Це запобігає перезапису "#ЦИКЛ!" на "#ПОМИЛКА".
+                
                 if (ex.Message.Contains("Циклічне посилання виявлено"))
                 {
                     cell.DisplayValue = "#ЦИКЛ!";
@@ -190,19 +183,17 @@ namespace ElectronicSpreadsheet
 
             var cell = _cells[row, col];
 
-            // 1. Перевіряємо помилку, яка могла бути встановлена ПОПЕРЕДНІМ обчисленням
-            // (Це важливо для клітинок, які ми ще не обчислювали в цьому циклі)
+            
             if (cell.HasError)
                 throw new Exception($"Клітинка {GetCellReference(row, col)} містить помилку: {cell.ErrorMessage}");
 
-            // 2. Це ваш існуючий код, який запускає рекурсивне обчислення
+            
             if (cell.ComputedValue == null && !string.IsNullOrWhiteSpace(cell.Expression))
             {
                 EvaluateCell(row, col);
             }
 
-            // 3. Перевіряємо помилку, яку щойно встановив EvaluateCell
-            // (Наприклад, якщо EvaluateCell виявив #ЦИКЛ!)
+            
             if (cell.HasError)
                 throw new Exception($"Клітинка {GetCellReference(row, col)} містить помилку: {cell.ErrorMessage}");
 
@@ -232,7 +223,7 @@ namespace ElectronicSpreadsheet
             int i = 0;
             string colPart = "";
 
-            // Читаємо літери (стовпець)
+            
             while (i < reference.Length && char.IsLetter(reference[i]))
             {
                 colPart += char.ToUpper(reference[i]);
@@ -242,21 +233,21 @@ namespace ElectronicSpreadsheet
             if (string.IsNullOrEmpty(colPart) || i >= reference.Length)
                 return false;
 
-            // Читаємо цифри (рядок)
+            
             string rowPart = reference.Substring(i);
 
             if (!int.TryParse(rowPart, out row))
                 return false;
 
-            row--; // Перетворюємо на 0-based індекс
+            row--; 
 
-            // Перетворюємо літери стовпця на число
+        
             col = 0;
             foreach (char c in colPart)
             {
                 col = col * 26 + (c - 'A' + 1);
             }
-            col--; // Перетворюємо на 0-based індекс
+            col--; 
 
             return true;
         }

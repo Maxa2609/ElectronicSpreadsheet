@@ -185,14 +185,12 @@ namespace ElectronicSpreadsheet
         {
             var token = _tokens[_position];
 
-            // Число
             if (token.Type == TokenType.Number)
             {
                 _position++;
                 return double.Parse(token.Value);
             }
 
-            // True/False
             if (token.Type == TokenType.True)
             {
                 _position++;
@@ -205,7 +203,6 @@ namespace ElectronicSpreadsheet
                 return false;
             }
 
-            // Посилання на клітинку
             if (token.Type == TokenType.CellReference)
             {
                 _position++;
@@ -216,13 +213,11 @@ namespace ElectronicSpreadsheet
                 throw new Exception($"Некоректне посилання на клітинку '{token.Value}'");
             }
 
-            // Функції
             if (token.Type == TokenType.Max || token.Type == TokenType.Min)
             {
                 return ParseFunction();
             }
 
-            // Вираз у дужках
             if (token.Type == TokenType.LeftParen)
             {
                 _position++;
@@ -250,10 +245,10 @@ namespace ElectronicSpreadsheet
 
             var args = new List<object>();
 
-            // Перший аргумент
+
             args.Add(ParseOrExpression());
 
-            // Додаткові аргументи
+
             while (_tokens[_position].Type == TokenType.Comma)
             {
                 _position++;
@@ -265,7 +260,7 @@ namespace ElectronicSpreadsheet
 
             _position++;
 
-            // Обчислення функції
+
             if (funcToken.Type == TokenType.Max)
             {
                 if (args.Count < 2)

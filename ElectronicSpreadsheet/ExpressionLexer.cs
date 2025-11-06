@@ -69,17 +69,16 @@ namespace ElectronicSpreadsheet
 
                 char current = _input[_position];
 
-                // Числа
                 if (char.IsDigit(current))
                 {
                     tokens.Add(ReadNumber());
                 }
-                // Ідентифікатори та ключові слова
+
                 else if (char.IsLetter(current))
                 {
                     tokens.Add(ReadIdentifier());
                 }
-                // Оператори
+
                 else
                 {
                     Token token = ReadOperator();
@@ -130,7 +129,6 @@ namespace ElectronicSpreadsheet
 
             string value = identifier.ToString().ToLower();
 
-            // Перевірка ключових слів
             switch (value)
             {
                 case "and":
@@ -148,7 +146,7 @@ namespace ElectronicSpreadsheet
                 case "false":
                     return new Token(TokenType.False, value, start);
                 default:
-                    // Перевірка, чи це посилання на клітинку
+
                     if (IsCellReference(identifier.ToString()))
                         return new Token(TokenType.CellReference, identifier.ToString(), start);
 
@@ -162,14 +160,14 @@ namespace ElectronicSpreadsheet
                 return false;
 
             int i = 0;
-            // Перевіряємо літери
+
             while (i < text.Length && char.IsLetter(text[i]))
                 i++;
 
             if (i == 0 || i == text.Length)
                 return false;
 
-            // Перевіряємо цифри
+           
             while (i < text.Length && char.IsDigit(text[i]))
                 i++;
 
